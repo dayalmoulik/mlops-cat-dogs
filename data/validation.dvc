@@ -1,0 +1,6 @@
+outs:
+- md5: 8c3ca271c1d05873cf02eb221dd3512f.dir
+  size: 84663818
+  nfiles: 2500
+  hash: md5
+  path: validation
