@@ -49,3 +49,5 @@ htmlcov/
 
 # Environment
 .env
+
+evaluation_results/
