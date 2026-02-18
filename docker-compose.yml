@@ -1,0 +1,26 @@
+﻿version: '3.8'
+
+services:
+  api:
+    build: .
+    image: cats-dogs-classifier:latest
+    container_name: cats-dogs-api
+    ports:
+      - '8000:8000'
+    environment:
+      - MODEL_PATH=models/checkpoints/best_model.pth
+      - MODEL_NAME=improved
+      - PORT=8000
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - ml-network
+
+networks:
+  ml-network:
+    driver: bridge

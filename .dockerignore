@@ -1,0 +1,61 @@
+﻿# Python
+__pycache__
+*.py[cod]
+*\.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# Data (too large for container)
+data/
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# DVC
+.dvc/cache
+.dvc/tmp
+
+# MLflow runs
+mlruns/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Documentation
+*.md
+!requirements.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Evaluation results
+evaluation_results/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Tests
+tests/
+
+# Scripts (not needed in container)
+scripts/
+
+# Training code (not needed for inference)
+src/training/
+
+# Config files
+.env
+*.ini
