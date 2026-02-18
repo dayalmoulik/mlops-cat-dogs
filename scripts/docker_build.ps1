@@ -2,7 +2,7 @@
 Write-Host 'Building Docker image...' -ForegroundColor Cyan
 docker build -t cats-dogs-classifier:latest .
 
-if (\0 -eq 0) {
+if ($LASTEXITCODE -eq 0) {
     Write-Host '✓ Image built successfully!' -ForegroundColor Green
     Write-Host ''
     Write-Host 'Image details:'

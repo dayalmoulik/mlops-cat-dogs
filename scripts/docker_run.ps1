@@ -6,12 +6,12 @@ docker stop cats-dogs-api 2>$null
 docker rm cats-dogs-api 2>$null
 
 # Run new container
-docker run -d \`
-    --name cats-dogs-api \`
-    -p 8000:8000 \`
+docker run -d `
+    --name cats-dogs-api `
+    -p 8000:8000 `
     cats-dogs-classifier:latest
 
-if (\0 -eq 0) {
+if ($LASTEXITCODE -eq 0) {
     Write-Host '✓ Container started successfully!' -ForegroundColor Green
     Write-Host ''
     Write-Host 'Waiting for API to be ready...'
