@@ -127,5 +127,4 @@ Ready to proceed to:
 ---
 
 **Module 1 Status: 100% COMPLETE** 🎉
-**Total Time**: ~[Your time here]
 **Next Module**: M2 - Model Packaging & Containerization
