@@ -86,3 +86,33 @@ With ImprovedCNN (15 epochs):
 - Adjust learning rate
 - Try ImprovedCNN model
 - Enable data augmentation
+
+## CLI Training (Recommended)
+
+### Quick Start
+\\\powershell
+# Train SimpleCNN
+python src/training/train_cli.py --model simple --epochs 10
+
+# Train ImprovedCNN
+python src/training/train_cli.py --model improved --epochs 15 --lr 0.0005
+\\\
+
+### All Options
+\\\powershell
+python src/training/train_cli.py --help
+\\\
+
+### Using Convenience Scripts
+\\\powershell
+# SimpleCNN
+powershell scripts/train_simple.ps1
+
+# ImprovedCNN
+powershell scripts/train_improved.ps1
+
+# Quick test
+powershell scripts/train_quick_test.ps1
+\\\
+
+See [TRAINING_EXAMPLES.md](TRAINING_EXAMPLES.md) for more examples.
