@@ -1,4 +1,5 @@
-﻿# Python
+﻿
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -7,6 +8,7 @@ __pycache__/
 venv/
 env/
 *.egg-info/
+.pytest_cache/
 
 # Data files - but NOT .dvc metadata
 data/*
@@ -25,6 +27,7 @@ models/*
 
 # MLflow
 mlruns/
+mlflow.db
 
 # DVC - ignore cache but keep config
 .dvc/cache
@@ -46,8 +49,22 @@ Thumbs.db
 .pytest_cache/
 htmlcov/
 .coverage
+coverage.xml
 
 # Environment
 .env
 
+# Evaluation results (generated files)
 evaluation_results/
+classification_report.txt
+confusion_matrix.png
+training_curves.png
+per_class_metrics.png
+roc_curve.png
+
+# Docker build artifacts
+requirements-docker.txt
+
+# Temporary files
+*.tmp
+*.bak
