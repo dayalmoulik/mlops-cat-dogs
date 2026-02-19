@@ -1,0 +1,117 @@
+﻿name: CD Pipeline - Production Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  DOCKER_IMAGE: cats-dogs-classifier
+  K8S_NAMESPACE: ml-models
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.27.0'
+    
+    # Uncomment and configure for actual cloud deployment
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v2
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: us-east-1
+    
+    # - name: Configure kubectl for EKS
+    #   run: |
+    #     aws eks update-kubeconfig --name my-cluster --region us-east-1
+    
+    # - name: Configure GCP credentials
+    #   uses: google-github-actions/auth@v1
+    #   with:
+    #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    # - name: Configure kubectl for GKE
+    #   run: |
+    #     gcloud container clusters get-credentials my-cluster --zone us-central1-a
+    
+    - name: Validate manifests
+      run: |
+        kubectl apply --dry-run=client -f k8s/
+    
+    - name: Deploy to Kubernetes
+      run: |
+        echo "Deploying to ${{ github.event.inputs.environment }}..."
+        
+        # Create namespace
+        kubectl apply -f k8s/namespace.yaml
+        
+        # Apply ConfigMap
+        kubectl apply -f k8s/configmap.yaml -n ${{ env.K8S_NAMESPACE }}
+        
+        # Apply Deployment
+        kubectl apply -f k8s/deployment.yaml -n ${{ env.K8S_NAMESPACE }}
+        
+        # Apply Service
+        kubectl apply -f k8s/service.yaml -n ${{ env.K8S_NAMESPACE }}
+        
+        # Apply HPA
+        kubectl apply -f k8s/hpa.yaml -n ${{ env.K8S_NAMESPACE }}
+    
+    - name: Wait for rollout
+      run: |
+        kubectl rollout status deployment/cats-dogs-classifier -n ${{ env.K8S_NAMESPACE }} --timeout=5m
+    
+    - name: Get deployment info
+      run: |
+        echo "Deployment Status:"
+        kubectl get deployments -n ${{ env.K8S_NAMESPACE }}
+        echo ""
+        kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+        echo ""
+        kubectl get services -n ${{ env.K8S_NAMESPACE }}
+    
+    - name: Run smoke tests
+      run: |
+        # Get service endpoint
+        SERVICE_IP=$(kubectl get svc cats-dogs-service -n ${{ env.K8S_NAMESPACE }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        
+        if [ -z "$SERVICE_IP" ]; then
+          echo "Waiting for LoadBalancer IP..."
+          sleep 30
+          SERVICE_IP=$(kubectl get svc cats-dogs-service -n ${{ env.K8S_NAMESPACE }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        fi
+        
+        if [ -n "$SERVICE_IP" ]; then
+          echo "Running smoke tests against http://$SERVICE_IP"
+          python scripts/smoke_test.py http://$SERVICE_IP
+        else
+          echo "Warning: Could not get service IP, skipping smoke tests"
+        fi
+    
+    - name: Deployment summary
+      run: |
+        echo "=================================="
+        echo "Deployment Complete!"
+        echo "=================================="
+        echo "Environment: ${{ github.event.inputs.environment }}"
+        echo "Namespace: ${{ env.K8S_NAMESPACE }}"
+        echo "Image: ${{ env.DOCKER_IMAGE }}:latest"
+        echo "=================================="

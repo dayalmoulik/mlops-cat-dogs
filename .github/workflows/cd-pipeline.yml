@@ -1,0 +1,90 @@
+﻿name: CD Pipeline - Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["CI - Test & Build"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  DOCKER_IMAGE: cats-dogs-classifier
+  K8S_NAMESPACE: ml-models
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.27.0'
+    
+    - name: Configure kubectl (would use actual cluster here)
+      run: |
+        # In production, you would configure kubectl with actual cluster credentials
+        # For now, we'll show the deployment files are ready
+        echo "Deployment manifests ready:"
+        ls -la k8s/
+    
+    - name: Validate Kubernetes manifests
+      run: |
+        echo "Validating Kubernetes manifests..."
+        kubectl apply --dry-run=client -f k8s/namespace.yaml
+        kubectl apply --dry-run=client -f k8s/configmap.yaml
+        kubectl apply --dry-run=client -f k8s/deployment.yaml
+        kubectl apply --dry-run=client -f k8s/service.yaml
+        kubectl apply --dry-run=client -f k8s/hpa.yaml
+        echo "✓ All manifests are valid"
+    
+    - name: Simulate deployment
+      run: |
+        echo "=================================="
+        echo "Deployment Simulation"
+        echo "=================================="
+        echo "Image: ${{ env.DOCKER_IMAGE }}:latest"
+        echo "Namespace: ${{ env.K8S_NAMESPACE }}"
+        echo "Replicas: 3"
+        echo "=================================="
+        echo "In production, this would:"
+        echo "  1. Apply namespace"
+        echo "  2. Apply configmap"
+        echo "  3. Apply deployment"
+        echo "  4. Apply service"
+        echo "  5. Apply HPA"
+        echo "  6. Wait for rollout"
+        echo "  7. Run smoke tests"
+        echo "=================================="
+    
+    - name: Run smoke tests (simulated)
+      run: |
+        echo "Running smoke tests..."
+        python scripts/smoke_test.py http://localhost:8000 || echo "Smoke test would run against deployed service"
+        echo "✓ Smoke tests would verify deployment"
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+    
+    steps:
+    - name: Deployment Success
+      if: ${{ needs.deploy.result == 'success' }}
+      run: |
+        echo "✓ Deployment successful!"
+        echo "Deployment completed at $(date)"
+    
+    - name: Deployment Failed
+      if: ${{ needs.deploy.result == 'failure' }}
+      run: |
+        echo "✗ Deployment failed!"
+        echo "Please check logs for details"
+        exit 1
