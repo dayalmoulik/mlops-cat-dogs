@@ -2,17 +2,20 @@
 
 services:
   api:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     image: cats-dogs-classifier:latest
     container_name: cats-dogs-api
     ports:
-      - '8000:8000'
+      - "8000:8000"
     environment:
       - MODEL_PATH=models/checkpoints/best_model.pth
       - MODEL_NAME=improved
       - PORT=8000
+      - PYTHONUNBUFFERED=1
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -20,6 +23,14 @@ services:
     restart: unless-stopped
     networks:
       - ml-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
 networks:
   ml-network:

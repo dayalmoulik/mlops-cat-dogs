@@ -1,0 +1,9 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cats-dogs-config
+data:
+  MODEL_PATH: "models/checkpoints/best_model.pth"
+  MODEL_NAME: "improved"
+  PORT: "8000"
+  LOG_LEVEL: "INFO"
