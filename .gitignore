@@ -62,9 +62,9 @@ training_curves.png
 per_class_metrics.png
 roc_curve.png
 
-# Docker build artifacts
-requirements-docker.txt
+# Docker build artifacts (keep requirements-docker.txt)
 
 # Temporary files
 *.tmp
 *.bak
+
