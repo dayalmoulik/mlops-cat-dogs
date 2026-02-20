@@ -1,6 +1,6 @@
 ﻿# Module 1 Summary - Model Development & Experiment Tracking ✅
 
-## Completed Tasks (10/10 marks)
+## Completed Tasks 
 
 ### 1. Data & Code Versioning ✅
 - Git repository with proper structure
@@ -45,7 +45,7 @@
 ## Deliverables
 
 📁 **Code Structure:**
-\\\
+```
 src/
 ├── models/
 │   ├── cnn.py                 ✅ Model architectures
@@ -61,7 +61,7 @@ src/
     ├── README.md             ✅ Training guide
     ├── TRAINING_EXAMPLES.md  ✅ Usage examples
     └── EVALUATION_GUIDE.md   ✅ Evaluation guide
-\\\
+```
 
 📊 **Data:**
 - 24,998 images (12,499 cats, 12,499 dogs)

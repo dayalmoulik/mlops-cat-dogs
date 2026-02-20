@@ -27,14 +27,14 @@ Implement Continuous Integration to automatically test, package, and build conta
 ## Prerequisites
 
 ### GitHub Secrets Needed
-- \DOCKER_USERNAME\ - Docker Hub username
-- \DOCKER_PASSWORD\ - Docker Hub password/token
+- DOCKER_USERNAME - Docker Hub username
+- DOCKER_PASSWORD - Docker Hub password/token
 
 ### Files to Create
-- \.github/workflows/ci-pipeline.yml\
-- \	ests/test_preprocessing.py\ (enhance existing)
-- \	ests/test_inference.py\ (new)
-- \	ests/test_api.py\ (new)
+- .github/workflows/ci-pipeline.yml
+- 	ests/test_preprocessing.py (enhance existing)
+- 	ests/test_inference.py (new)
+- 	ests/test_api.py (new)
 
 ## Estimated Time
 - Writing tests: 1-1.5 hours

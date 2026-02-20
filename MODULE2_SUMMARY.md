@@ -1,6 +1,6 @@
 ﻿# Module 2 Summary - Model Packaging & Containerization ✅
 
-## Completed Tasks (10/10 marks)
+## Completed Tasks 
 
 ### 1. FastAPI Inference Service ✅
 - REST API with multiple endpoints
@@ -30,17 +30,18 @@
 ## Deliverables
 
 ### API Endpoints
-\\\
+
 GET  /              - API information
 GET  /health        - Health check
 POST /predict       - Image classification
 GET  /model/info    - Model details
 GET  /docs          - Swagger UI
 GET  /redoc         - ReDoc
-\\\
+
 
 ### API Response Example
-\\\json
+```
+json
 {
   "prediction": "cat",
   "confidence": 0.9567,
@@ -50,7 +51,7 @@ GET  /redoc         - ReDoc
   },
   "timestamp": "2024-02-18T10:30:00"
 }
-\\\
+```
 
 ### Docker Configuration
 - **Image**: cats-dogs-classifier:latest
@@ -62,7 +63,8 @@ GET  /redoc         - ReDoc
 - **Startup Time**: ~10-15 seconds
 
 ### Files Created
-\\\
+
+```
 src/api/
 ├── main.py                  # FastAPI application
 └── README.md               # API documentation
@@ -80,7 +82,7 @@ scripts/
 ├── docker_run.ps1         # Run helper
 ├── docker_test.ps1        # Test helper
 └── docker_stop.ps1        # Stop helper
-\\\
+```
 
 ## Testing Performed
 
@@ -137,13 +139,14 @@ scripts/
 ## Usage
 
 ### Start API Locally
-\\\powershell
+powershell
 python src/api/main.py
 # Visit: http://localhost:8000/docs
-\\\
+
 
 ### Docker Commands
-\\\powershell
+```
+powershell
 # Build
 docker build -t cats-dogs-classifier:latest .
 
@@ -152,10 +155,12 @@ docker run -d -p 8000:8000 cats-dogs-classifier:latest
 
 # Or use Docker Compose
 docker-compose up -d
-\\\
+```
 
 ### Test API
-\\\powershell
+
+```
+powershell
 # Test local API
 python scripts/test_api.py
 
@@ -164,7 +169,7 @@ python scripts/test_docker_api.py
 
 # Manual test
 curl -X POST -F \"file=@cat.jpg\" http://localhost:8000/predict
-\\\
+```
 
 ## Model Information
 
@@ -202,6 +207,5 @@ Ready for:
 ---
 
 **Module 2 Status**: 100% COMPLETE 🎉
-**Grade Expected**: 10/10 marks
 **Time Taken**: ~3-4 hours
 **Next Module**: M3 - CI Pipeline for Build, Test & Image Creation
