@@ -1,0 +1,91 @@
+﻿name: CD - Deploy with Docker Compose
+
+on:
+  workflow_run:
+    workflows: ["CI - Test & Build"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-docker-compose:
+    name: Deploy to Docker Compose
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies for model
+      run: |
+        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+        pip install -e .
+    
+    - name: Create dummy model for deployment
+      run: |
+        mkdir -p models/checkpoints
+        python scripts/create_dummy_model.py
+    
+    - name: Verify docker-compose.yml exists
+      run: |
+        if [ -f docker-compose.yml ]; then
+          echo "✓ docker-compose.yml found"
+          cat docker-compose.yml
+        else
+          echo "✗ docker-compose.yml not found"
+          exit 1
+        fi
+    
+    - name: Build with Docker Compose
+      run: |
+        docker-compose build
+    
+    - name: Deploy with Docker Compose
+      run: |
+        echo "Deploying application..."
+        docker-compose up -d
+        echo "✓ Application deployed"
+    
+    - name: Wait for service to be ready
+      run: |
+        echo "Waiting for service to start..."
+        sleep 20
+        docker-compose ps
+    
+    - name: Run smoke tests
+      run: |
+        echo "Running smoke tests..."
+        
+        # Install requests for smoke test
+        pip install requests
+        
+        # Run smoke test
+        python scripts/smoke_test.py http://localhost:8000 || {
+          echo "✗ Smoke tests failed"
+          docker-compose logs
+          docker-compose down
+          exit 1
+        }
+        
+        echo "✓ Smoke tests passed"
+    
+    - name: Deployment summary
+      run: |
+        echo "=================================="
+        echo "Deployment Complete!"
+        echo "=================================="
+        echo "Status: Success"
+        echo "Environment: Docker Compose"
+        docker-compose ps
+    
+    - name: Cleanup
+      if: always()
+      run: |
+        docker-compose down
