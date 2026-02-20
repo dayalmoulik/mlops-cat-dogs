@@ -30,14 +30,14 @@
 ## Deliverables
 
 ### API Endpoints
-
+```
 GET  /              - API information
 GET  /health        - Health check
 POST /predict       - Image classification
 GET  /model/info    - Model details
 GET  /docs          - Swagger UI
 GET  /redoc         - ReDoc
-
+```
 
 ### API Response Example
 ```
@@ -87,19 +87,19 @@ scripts/
 ## Testing Performed
 
 ### Local API Testing
-✅ Health check endpoint
-✅ Prediction endpoint with sample images
-✅ Model info endpoint
-✅ Error handling (invalid files, missing model)
-✅ Swagger UI documentation
+- ✅ Health check endpoint
+- ✅ Prediction endpoint with sample images
+- ✅ Model info endpoint
+- ✅ Error handling (invalid files, missing model)
+- ✅ Swagger UI documentation
 
 ### Docker Testing
-✅ Image builds successfully
-✅ Container starts and loads model
-✅ Health checks pass
-✅ API accessible from host
-✅ Predictions work correctly
-✅ Docker Compose deployment
+- ✅ Image builds successfully
+- ✅ Container starts and loads model
+- ✅ Health checks pass
+- ✅ API accessible from host
+- ✅ Predictions work correctly
+- ✅ Docker Compose deployment
 
 ## Performance
 
@@ -139,10 +139,10 @@ scripts/
 ## Usage
 
 ### Start API Locally
-powershell
+```powershell
 python src/api/main.py
 # Visit: http://localhost:8000/docs
-
+```
 
 ### Docker Commands
 ```

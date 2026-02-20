@@ -3,149 +3,141 @@
 ## Building the Image
 
 ### Build locally
-\\\powershell
+```powershell
 docker build -t cats-dogs-classifier:latest .
-\\\
+```
 
 ### Build with specific tag
-\\\powershell
+```powershell
 docker build -t cats-dogs-classifier:v1.0 .
-\\\
+```
 
 ## Running the Container
 
 ### Run with docker
-\\\powershell
-docker run -d \
-    --name cats-dogs-api \
-    -p 8000:8000 \
-    cats-dogs-classifier:latest
-\\\
+```powershell
+docker run -d --name cats-dogs-api -p 8000:8000 cats-dogs-classifier:latest
+```
 
 ### Run with docker-compose
-\\\powershell
+```powershell
 docker-compose up -d
-\\\
+```
 
 ### Run with custom model
-\\\powershell
-docker run -d \
-    --name cats-dogs-api \
-    -p 8000:8000 \
-    -e MODEL_PATH=models/improved/model_e15.pth \
-    -e MODEL_NAME=improved \
-    cats-dogs-classifier:latest
-\\\
+```powershell
+docker run -d --name cats-dogs-api -p 8000:8000 -e MODEL_PATH=models/improved/model_e15.pth -e MODEL_NAME=improved cats-dogs-classifier:latest
+```
 
 ## Container Management
 
 ### View running containers
-\\\powershell
+```powershell
 docker ps
-\\\
+```
 
 ### View logs
-\\\powershell
+```powershell
 docker logs cats-dogs-api
 docker logs -f cats-dogs-api  # Follow logs
-\\\
+```
 
 ### Stop container
-\\\powershell
+```powershell
 docker stop cats-dogs-api
-\\\
+```
 
 ### Remove container
-\\\powershell
+```powershell
 docker rm cats-dogs-api
-\\\
+```
 
 ### Restart container
-\\\powershell
+```powershell
 docker restart cats-dogs-api
-\\\
+```
 
 ## Docker Compose Commands
 
 ### Start services
-\\\powershell
+```powershell
 docker-compose up -d
-\\\
+```
 
 ### Stop services
-\\\powershell
+```powershell
 docker-compose down
-\\\
+```
 
 ### View logs
-\\\powershell
+```powershell
 docker-compose logs -f
-\\\
+```
 
 ### Rebuild and restart
-\\\powershell
+```powershell
 docker-compose up -d --build
-\\\
+```
 
 ## Testing the Container
 
 ### Health check
-\\\powershell
+```powershell
 curl http://localhost:8000/health
-\\\
+```
 
 ### Make prediction
-\\\powershell
+```powershell
 curl -X POST -F \"file=@path/to/image.jpg\" http://localhost:8000/predict
-\\\
+```
 
 ### Run test script
-\\\powershell
+```powershell
 python scripts/test_docker_api.py
-\\\
+```
 
 ## Image Information
 
 ### View images
-\\\powershell
+```powershell
 docker images
-\\\
+```
 
 ### Inspect image
-\\\powershell
+```powershell
 docker inspect cats-dogs-classifier:latest
-\\\
+```
 
 ### Image size
-\\\powershell
+```powershell
 docker images cats-dogs-classifier --format \"{{.Repository}}:{{.Tag}} - {{.Size}}\"
-\\\
+```
 
 ## Troubleshooting
 
 ### Container won't start
-\\\powershell
+```powershell
 # Check logs
 docker logs cats-dogs-api
 
 # Check if port is already in use
 netstat -ano | findstr :8000
-\\\
+```
 
 ### Model not loading
-\\\powershell
+```powershell
 # Verify model file exists in image
 docker run --rm cats-dogs-classifier:latest ls -la models/checkpoints/
 
 # Check environment variables
 docker inspect cats-dogs-api | Select-String \"Env\"
-\\\
+```
 
 ### Permission issues
-\\\powershell
+```powershell
 # Run as root (not recommended for production)
 docker run -d --user root cats-dogs-classifier:latest
-\\\
+```
 
 ## Environment Variables
 
@@ -171,7 +163,7 @@ The container includes a health check that:
 
 ## Best Practices
 
-1. **Use specific tags**: \cats-dogs-classifier:v1.0\ instead of \:latest\
+1. **Use specific tags**: `cats-dogs-classifier:v1.0` instead of `:latest`
 2. **Keep images small**: Multi-stage builds, .dockerignore
 3. **Don't run as root**: Add non-root user in production
 4. **Use environment variables**: For configuration

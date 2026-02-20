@@ -33,7 +33,7 @@
 - **Augmentation**: Random flip, rotation, color jitter, affine transforms
 
 ## Model Architecture
-\\\
+```
 ImprovedCNN:
 - Initial Conv: 3→64 channels
 - ResBlock 1: 64 channels (2 blocks)
@@ -43,7 +43,7 @@ ImprovedCNN:
 - FC Layer: 256→2 classes
 
 Total Parameters: 2,768,386
-\\\
+```
 
 ## Performance
 
@@ -91,7 +91,7 @@ Total Parameters: 2,768,386
 ## Model Usage
 
 ### Loading the Model
-\\\python
+```python
 import torch
 from src.models.cnn import get_model
 
@@ -99,10 +99,10 @@ from src.models.cnn import get_model
 model = get_model('improved', num_classes=2)
 model.load_state_dict(torch.load('models/checkpoints/best_model.pth'))
 model.eval()
-\\\
+```
 
 ### Making Predictions
-\\\python
+```python
 from PIL import Image
 from src.utils.preprocessing import preprocess_image
 
@@ -119,7 +119,7 @@ with torch.no_grad():
 # 0 = Cat, 1 = Dog
 result = 'Cat' if predicted_class == 0 else 'Dog'
 confidence = probabilities[0][predicted_class].item()
-\\\
+```
 
 ## Maintenance
 - **Retraining**: Recommended if accuracy drops below 90%
@@ -130,14 +130,14 @@ confidence = probabilities[0][predicted_class].item()
 For questions or issues, please refer to the project repository.
 
 ## Citation
-\\\
+```
 @misc{cats-dogs-mlops-2024,
   title={Cats vs Dogs MLOps Pipeline},
   author={[Your Name]},
   year={2024},
-  howpublished={\url{https://github.com/[username]/cats-dogs-mlops}}
+  howpublished={`url{https://github.com/[username]/cats-dogs-mlops}}
 }
-\\\
+```
 
 ---
 

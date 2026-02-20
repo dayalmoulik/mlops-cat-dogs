@@ -92,32 +92,32 @@ Tests for model evaluation utilities
 ## Running Tests
 
 ### Run all tests
-\\\powershell
+```powershell
 pytest tests/ -v
-\\\
+```
 
 ### Run with coverage
-\\\powershell
+```powershell
 pytest tests/ --cov=src --cov-report=html --cov-report=term
-\\\
+```
 
 ### Run specific test file
-\\\powershell
+```powershell
 pytest tests/test_preprocessing.py -v
 pytest tests/test_inference.py -v
 pytest tests/test_api.py -v
 pytest tests/test_evaluation.py -v
-\\\
+```
 
 ### Run specific test class
-\\\powershell
+```powershell
 pytest tests/test_preprocessing.py::TestPreprocessing -v
-\\\
+```
 
 ### Run specific test
-\\\powershell
+```powershell
 pytest tests/test_api.py::TestAPIEndpoints::test_health_endpoint -v
-\\\
+```
 
 ## CI Integration
 
@@ -130,7 +130,7 @@ These tests are designed to run in GitHub Actions CI pipeline:
 
 ## Test Requirements
 
-See \equirements-test.txt\ for dependencies:
+See `equirements-test.txt` for dependencies:
 - pytest
 - pytest-cov
 - pytest-asyncio
