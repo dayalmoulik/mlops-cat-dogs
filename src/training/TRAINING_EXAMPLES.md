@@ -1,76 +1,114 @@
-﻿# Training Examples and Quick Reference
+﻿# Training Examples
 
-## Basic Usage
+## Quick Training
 
-### Train SimpleCNN (default)
-python src/training/train_cli.py
+### Train SimpleCNN (10 epochs)
+```powershell
+python src/training/train_cli.py --model simple --epochs 10
+```
 
-### Train ImprovedCNN
-python src/training/train_cli.py --model improved
+Results will be saved to: `evaluation_results/train_results/training_YYYYMMDD_HHMMSS/`
 
-## Recommended Configurations
+### Train ImprovedCNN (15 epochs)
+```powershell
+python src/training/train_cli.py --model improved --epochs 15 --lr 0.0005
+```
 
-### SimpleCNN (Quick Training)
-python src/training/train_cli.py \
-    --model simple \
-    --epochs 10 \
-    --batch-size 32 \
-    --lr 0.001
+## Custom Training
 
-### ImprovedCNN (Better Accuracy)
-python src/training/train_cli.py \
-    --model improved \
-    --epochs 15 \
-    --batch-size 32 \
-    --lr 0.0005
-
-### Production Training (High Accuracy)
+### With Custom Experiment Name
+```powershell
 python src/training/train_cli.py \
     --model improved \
     --epochs 20 \
-    --batch-size 64 \
-    --lr 0.0001 \
-    --workers 8
+    --experiment-name "improved_v2_20epochs"
+```
 
-### Quick Test (Fast Iteration)
+Results will be saved to: `evaluation_results/train_results/improved_v2_20epochs/`
+
+### With Custom Results Directory
+```powershell
 python src/training/train_cli.py \
     --model simple \
-    --epochs 2 \
-    --batch-size 16 \
-    --workers 0
+    --epochs 10 \
+    --checkpoint-dir "my_experiments/run1"
+```
 
-## Advanced Options
+### Without Data Augmentation
+```powershell
+python src/training/train_cli.py --model simple --no-augmentation
+```
 
-### Disable Data Augmentation
-python src/training/train_cli.py --no-augmentation
+## Output Files
 
-### Custom Image Size
-python src/training/train_cli.py --image-size 256
+After training, you will find these files in `evaluation_results/train_results/{experiment_name}/`:
+```
+evaluation_results/train_results/training_20260220_103045/
+├── best_model.pth              # Best model checkpoint
+├── last_checkpoint.pth         # Latest checkpoint
+├── training_curves.png         # Loss and accuracy plots
+├── confusion_matrix.png        # Validation confusion matrix
+├── classification_report.txt   # Detailed metrics
+└── training_history.json       # Complete training history
+```
 
-### Custom Checkpoint Directory
-python src/training/train_cli.py --checkpoint-dir models/my_experiment
+## All Command Line Options
+```
+--model              Model architecture (simple/improved)
+--epochs             Number of training epochs (default: 10)
+--batch-size         Batch size (default: 32)
+--lr                 Learning rate (default: 0.001)
+--train-dir          Training data directory (default: data/train)
+--val-dir            Validation data directory (default: data/validation)
+--num-workers        Data loading workers (default: 4)
+--image-size         Input image size (default: 224)
+--no-augmentation    Disable data augmentation
+--checkpoint-dir     Results directory (default: evaluation_results/train_results)
+--experiment-name    Custom experiment name
+--device             Device to use (cuda/cpu, auto-detect if not specified)
+```
 
-### Custom MLflow Run Name
-python src/training/train_cli.py --run-name my_awesome_model
+## Recommended Settings
 
-### Force CPU Training
-python src/training/train_cli.py --device cpu
+### SimpleCNN
+```powershell
+python src/training/train_cli.py \
+    --model simple \
+    --epochs 10 \
+    --lr 0.001 \
+    --batch-size 32
+```
 
-## View All Options
-python src/training/train_cli.py --help
+### ImprovedCNN
+```powershell
+python src/training/train_cli.py \
+    --model improved \
+    --epochs 15 \
+    --lr 0.0005 \
+    --batch-size 32
+```
 
-## Comparison: SimpleCNN vs ImprovedCNN
+## Monitoring Training
 
-| Parameter      | SimpleCNN     | ImprovedCNN   | Notes                    |
-|----------------|---------------|---------------|--------------------------|
-| Model Size     | 11.2M params  | 2.8M params   | Improved is more efficient|
-| Epochs         | 10            | 15            | Improved needs more epochs|
-| Learning Rate  | 0.001         | 0.0005        | Lower LR = more stable   |
-| Expected Acc   | 85-90%        | 90-93%        | On validation set        |
-| Training Time  | ~30 min (CPU) | ~40 min (CPU) | Approximate              |
+Training progress is shown with progress bars and epoch summaries:
+```
+Epoch 5/10
+------------------------------------------------------------
+Training: 100%|████████████████| 625/625 [02:15<00:00, 4.61it/s, loss=0.3245, acc=87.45%]
+Validation: 100%|████████████████| 79/79 [00:15<00:00, 5.23it/s, loss=0.2891, acc=89.12%]
 
-## Monitoring
+Epoch 5 Summary:
+  Train Loss: 0.3245 | Train Acc: 87.45%
+  Val Loss: 0.2891   | Val Acc: 89.12%
+  ✓ New best model saved! (Val Acc: 89.12%)
+```
 
-View training progress in MLflow UI:
-mlflow ui --port 5000
-# Open: http://localhost:5000
+## Resume Training
+
+To resume from a checkpoint, you can load the saved model:
+```python
+checkpoint = torch.load('evaluation_results/train_results/training_20260220_103045/last_checkpoint.pth')
+model.load_state_dict(checkpoint['model_state_dict'])
+optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+start_epoch = checkpoint['epoch']
+```
